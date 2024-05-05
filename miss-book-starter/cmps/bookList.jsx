@@ -1,6 +1,7 @@
-export function bookList({books}) {
+export function BookList({books}) {
     return <section className="book-list">
-              <pre>{JSON.stringify(books, null, 2)}</pre>
-        
+              <ul>
+                 {books.map(book => <li key={book.id}>{book.title}</li>)}
+              </ul>
     </section>
 }

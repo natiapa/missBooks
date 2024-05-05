@@ -39,11 +39,15 @@ function _createBooks() {
     let books = utilService.loadFromStorage(BOOK_KEY)
     if (!books || !books.length) {
         books = []
-        const titles = ['holes', 'old tractors', 'beat your way to the top', 'magic lantern', 'between here and gone']
-        for (let i = 0; i < 6; i++) {
-            const title = titles[utilService.getRandomIntInclusive(0, titles.length - 1)]
-            books.push(_createBook(title))
-        }
+        // const titles = ['holes', 'old tractors', 'beat your way to the top']
+        // for (let i = 0; i < 3; i++) {
+        //     const title = titles[utilService.getRandomIntInclusive(0, titles.length - 1)]
+        //     books.push(_createBook(title))
+        // }
+        books.push(_createBook('holes'))
+        books.push(_createBook('old tractors'))
+        books.push(_createBook('beat your way to the top'))
+        
         utilService.saveToStorage(BOOK_KEY, books)
     }
 }
