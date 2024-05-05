@@ -8,7 +8,7 @@ import { Home } from "./pages/Home.jsx"
 
 export function RootCmp() {
 
-    const [route, setRoute] = useState('Home')
+    const [route, setRoute] = useState('Books')
     return <React.Fragment>
             <header>
                 <h1>Miss Books</h1>

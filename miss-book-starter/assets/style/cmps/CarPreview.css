@@ -1,0 +1,11 @@
+.book-preview {
+    display: grid;
+}
+.book-preview img {
+    justify-self: center;
+    max-width: 70%;
+}
+
+.book-preview img:hover {
+    rotate: 15deg;
+}
