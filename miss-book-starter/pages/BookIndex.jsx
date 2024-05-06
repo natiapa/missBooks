@@ -4,6 +4,7 @@ const { useState, useEffect } = React
 import { bookService } from '../services/book.service.js'
 
 import { BookList } from '/../cmps/BookList.jsx'
+import { BookFilter } from '/../cmps/BookFilter.jsx'
 
 
 export function BookIndex() {
@@ -23,6 +24,8 @@ export function BookIndex() {
     return (
         <section>
             <h1>Books</h1>
+
+            <BookFilter/>
             <BookList books={books} onRemove={removeCar} />
         </section>
     )

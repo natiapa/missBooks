@@ -10,6 +10,7 @@ export const bookService = {
     query,
     remove,
     getEmptyBook,
+    getDefaultFilter,
 
 }
 
@@ -29,27 +30,31 @@ function remove(bookId) {
 }
 
 
-function getEmptyBook(title = '', amount = 100, currencyCode = 'EUR', isOnSale = false ) {
+function getEmptyBook(title = '', amount = 100, currencyCode = 'EUR', isOnSale = false) {
     return {
         title,
         listPrice: {
-            amount ,
+            amount,
             currencyCode,
             isOnSale
         }
     }
 }
+function getDefaultFilter(filterBy = { txt: '', price: 0 }) {
+    return { txt: filterBy.txt, price: filterBy.price }
+}
+
 
 function _createBooks() {
     let books = utilService.loadFromStorage(BOOK_KEY)
     console.log('books', books)
     if (!books || !books.length) {
         books = []
-         books.push( _createBook('holes'))
-         books.push( _createBook('old tractors'))
-         books.push( _createBook('between here and gone'))
- 
-        
+        books.push(_createBook('holes'))
+        books.push(_createBook('old tractors'))
+        books.push(_createBook('between here and gone'))
+
+
         utilService.saveToStorage(BOOK_KEY, books)
     }
 }
