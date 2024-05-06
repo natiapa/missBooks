@@ -8,6 +8,7 @@ _createBooks()
 
 export const bookService = {
     query,
+    remove,
     getEmptyBook,
 
 }
@@ -21,6 +22,10 @@ function query(filterBy = {}) {
             }
             return books
         })
+}
+
+function remove(bookId) {
+    return storageService.remove(BOOK_KEY, bookId)
 }
 
 
@@ -37,16 +42,13 @@ function getEmptyBook(title = '', amount = 100, currencyCode = 'EUR', isOnSale =
 
 function _createBooks() {
     let books = utilService.loadFromStorage(BOOK_KEY)
+    console.log('books', books)
     if (!books || !books.length) {
         books = []
-        // const titles = ['holes', 'old tractors', 'beat your way to the top']
-        // for (let i = 0; i < 3; i++) {
-        //     const title = titles[utilService.getRandomIntInclusive(0, titles.length - 1)]
-        //     books.push(_createBook(title))
-        // }
-        books.push(_createBook('holes'))
-        books.push(_createBook('old tractors'))
-        books.push(_createBook('beat your way to the top'))
+         books.push( _createBook('holes'))
+         books.push( _createBook('old tractors'))
+         books.push( _createBook('between here and gone'))
+ 
         
         utilService.saveToStorage(BOOK_KEY, books)
     }
