@@ -9,11 +9,12 @@ import { BookFilter } from '/../cmps/BookFilter.jsx'
 
 export function BookIndex() {
     const [books, setBooks] = useState([])
+    const [filterBy, setFilterBy] = useState(bookService.getDefaultFilter())
 
     useEffect(() => {
-        bookService.query()
+        bookService.query(filterBy)
             .then(books => setBooks(books))
-    }, [])
+    }, [filterBy])
     
     function removeCar(bookId) {
         console.log(bookId)
@@ -21,11 +22,15 @@ export function BookIndex() {
                 .then(()=> setBooks(prevBooks => prevBooks.filter(book => book.id !== bookId)))
     }
 
+    function onSetFilterBy(newFilter) {
+        setFilterBy(newFilter)
+    }
+
     return (
         <section>
             <h1>Books</h1>
 
-            <BookFilter/>
+            <BookFilter filterBy={filterBy} onFilter={onSetFilterBy}/>
             <BookList books={books} onRemove={removeCar} />
         </section>
     )
