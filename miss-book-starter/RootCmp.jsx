@@ -8,7 +8,7 @@ import { About } from "./pages/About.jsx"
 import { Home } from "./pages/Home.jsx"
 
 import { AppHeader } from "./cmps/AppHeader.jsx"
-import { BookDetails } from "./cmps/BookDetails.jsx"
+import { BookDetails } from "./pages/BookDetails.jsx"
 
 export function RootCmp() {
     return (
@@ -19,7 +19,7 @@ export function RootCmp() {
                     <Route path="" element={<Home />} />
                     <Route path="/book" element={<BookIndex />} />
                     <Route path="/about" element={<About />} />
-                    <Route path="/book/details" element={<BookDetails />} />
+                    <Route path="/book/:bookId" element={<BookDetails />} />
                 </Routes>
             </main>
         </Router>

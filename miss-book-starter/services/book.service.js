@@ -9,6 +9,7 @@ _createBooks()
 
 export const bookService = {
     query,
+    get,
     remove,
     getEmptyBook,
     getDefaultFilter,
@@ -23,13 +24,22 @@ function query(filterBy = {}) {
                 books = books.filter(book => regExp.test(book.title))
             }
 
-            // if (filterBy.minPrice) {
-            //     books = books.filter(book => book.listPrice.amount >= filterBy.minPrice)
-            // }
+            if (filterBy.minPrice) {
+                books = books.filter(book => book.listPrice.amount >= filterBy.minPrice)
+            }
 
             return books
         })
 }
+
+function get(bookId) {
+    return storageService.get(BOOK_KEY, bookId)
+        .then(book => {
+            book = _setNextPrevBookId(book)
+            return book
+        })
+}
+
 
 function remove(bookId) {
     return storageService.remove(BOOK_KEY, bookId)
@@ -84,3 +94,13 @@ function _createBooks() {
     utilService.saveToStorage(BOOK_KEY, books)
 }
 
+function _setNextPrevBookId(book) {
+    return storageService.query(BOOK_KEY).then((books) => {
+        const bookIdx = books.findIndex((currBook) => currBook.id === book.id)
+        const nextBook = books[bookIdx + 1] ? books[bookIdx + 1] : books[0]
+        const prevBook = books[bookIdx - 1] ? books[bookIdx - 1] : books[books.length - 1]
+        book.nextBookId = nextBook.id
+        book.prevBookId = prevBook.id
+        return book
+    })
+}
