@@ -2,6 +2,7 @@ import { storageService } from './async-storage.service.js'
 import { utilService } from './util.service.js'
 
 
+
 const BOOK_KEY = 'bookDB'
 
 _createBooks()
@@ -21,6 +22,11 @@ function query(filterBy = {}) {
                 const regExp = new RegExp(filterBy.txt, 'i')
                 books = books.filter(book => regExp.test(book.title))
             }
+
+            // if (filterBy.minPrice) {
+            //     books = books.filter(book => book.listPrice.amount >= filterBy.minPrice)
+            // }
+
             return books
         })
 }
@@ -46,21 +52,35 @@ function getDefaultFilter(filterBy = { txt: '', price: 0 }) {
 
 
 function _createBooks() {
-    let books = utilService.loadFromStorage(BOOK_KEY)
-    console.log('books', books)
-    if (!books || !books.length) {
-        books = []
-        books.push(_createBook('holes'))
-        books.push(_createBook('old tractors'))
-        books.push(_createBook('between here and gone'))
+    const ctgs = ['Love', 'Fiction', 'Poetry', 'Computers', 'Religion']
+    const books = utilService.loadFromStorage(BOOK_KEY) || []
 
+    if(books && books.length) return
 
-        utilService.saveToStorage(BOOK_KEY, books)
+    for (let i = 0; i < 20; i++) {
+        const book = {
+            id: utilService.makeId(),
+            title: utilService.makeLorem(2),
+            subtitle: utilService.makeLorem(4),
+            authors: [
+                utilService.makeLorem(1)
+            ],
+            publishedDate: utilService.getRandomIntInclusive(1950, 2024),
+            description: utilService.makeLorem(20),
+            pageCount: utilService.getRandomIntInclusive(20, 600),
+            categories: [ctgs[utilService.getRandomIntInclusive(0, ctgs.length - 1)]],
+            thumbnail: `/assets/booksImages/${i + 1}.jpg`,
+            language: "en",
+            listPrice: {
+                amount: utilService.getRandomIntInclusive(80, 500),
+                currencyCode: "EUR",
+                isOnSale: Math.random() > 0.7
+            },
+            isReadMore: false
+        }
+        books.push(book)
     }
+    console.log('books',books)
+    utilService.saveToStorage(BOOK_KEY, books)
 }
 
-function _createBook(title) {
-    const book = getEmptyBook(title)
-    book.id = utilService.makeId()
-    return book
-}
