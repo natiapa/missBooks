@@ -11,6 +11,7 @@ export const bookService = {
     query,
     get,
     remove,
+    save,
     getEmptyBook,
     getDefaultFilter,
 
@@ -45,8 +46,15 @@ function remove(bookId) {
     return storageService.remove(BOOK_KEY, bookId)
 }
 
+function save(book) {
+    if (book.id) {
+        return storageService.put(BOOK_KEY, book)
+    } else {
+        return storageService.post(BOOK_KEY, book)
+    }
+}
 
-function getEmptyBook(title = '', amount = 100, currencyCode = 'EUR', isOnSale = false) {
+function getEmptyBook(title = '',amount='', currencyCode = 'EUR', isOnSale = false) {
     return {
         title,
         listPrice: {
