@@ -7,19 +7,20 @@ export function BookEdit() {
     const [book, setBook] = useState(bookService.getEmptyBook())
     const navigate = useNavigate()
     const params = useParams()
+    console.log('params edit',params)
 
-   useEffect( () => {
-    if(!params.bookId) return
+    useEffect(() => {
+        if (!params.bookId) return
 
-    bookService.get(params.bookId)
-        .then(setBook)
-   }, [])
+        bookService.get(params.bookId)
+            .then(setBook)
+    }, [])
 
     function onSave(ev) {
         ev.preventDefault()
         bookService.save(book)
             .then(() => navigate('/book'))
-            .catch(()=> {
+            .catch(() => {
                 alert('couldnt save')
                 navigate('/book')
             })
@@ -40,7 +41,6 @@ export function BookEdit() {
                 break;
         }
 
-        console.log("prop", prop)
         if (prop === 'amount') {
             setBook(prevBook => ({
                 ...prevBook,
@@ -54,7 +54,7 @@ export function BookEdit() {
     }
 
     return <section className="book-edit">
-        <h1>BookEdit</h1>
+        <h1>{params.bookId ? 'Edit Book' : 'Add Book'}</h1>
         <form onSubmit={onSave}>
             <label htmlFor="title">Title</label>
             <input

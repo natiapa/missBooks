@@ -4,6 +4,7 @@ import { utilService } from './util.service.js'
 
 
 const BOOK_KEY = 'bookDB'
+const REVIEW_BOOK_KEY = 'reviewBookDB'
 
 _createBooks()
 
@@ -14,6 +15,8 @@ export const bookService = {
     save,
     getEmptyBook,
     getDefaultFilter,
+    addReview,
+    getEmptyReview,
 
 }
 
@@ -54,6 +57,7 @@ function save(book) {
     }
 }
 
+
 function getEmptyBook(title = '',amount='', currencyCode = 'EUR', isOnSale = false) {
     return {
         title,
@@ -66,6 +70,41 @@ function getEmptyBook(title = '',amount='', currencyCode = 'EUR', isOnSale = fal
 }
 function getDefaultFilter(filterBy = { txt: '', price: 0 }) {
     return { txt: filterBy.txt, price: filterBy.price }
+}
+
+// function addReview(bookId, review) {
+//     const books = utilService.loadFromStorage(BOOK_KEY)
+
+//     const bookIndex = books.findIndex(book => book.id === bookId)
+//     if (bookIndex !== -1) {
+//         books[bookIndex].reviews.push(review)
+//         utilService.saveToStorage(BOOK_KEY, books)
+//     } else {
+//         console.error('Book not found')
+//     }
+
+// }
+function addReview(bookId, review) {
+    const books = utilService.loadFromStorage(BOOK_KEY);
+    const bookIndex = books.findIndex(book => book.id === bookId);
+
+    return new Promise((resolve, reject) => {
+        if (bookIndex !== -1) {
+            books[bookIndex].reviews.push(review);
+            utilService.saveToStorage(BOOK_KEY, books);
+            resolve(); // Resolve the promise once the review is added
+        } else {
+            reject(new Error('Book not found')); // Reject the promise if the book is not found
+        }
+    });
+}
+
+function getEmptyReview(fullname = '',rating = 0,readAt='') {
+    return {
+      fullname,
+      rating,
+      readAt,   
+    }
 }
 
 
@@ -94,7 +133,8 @@ function _createBooks() {
                 currencyCode: "EUR",
                 isOnSale: Math.random() > 0.7
             },
-            isReadMore: false
+            isReadMore: false,
+            reviews: [],
         }
         books.push(book)
     }
