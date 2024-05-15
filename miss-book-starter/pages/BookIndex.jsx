@@ -3,9 +3,11 @@ const { useState, useEffect } = React
 const { Link } = ReactRouterDOM
 
 import { bookService } from '../services/book.service.js'
+import { showSuccessMsg } from '../services/event-bus.service.js'
 
 import { BookList } from '/../cmps/BookList.jsx'
 import { BookFilter } from '/../cmps/BookFilter.jsx'
+
 
 
 export function BookIndex() {
@@ -16,11 +18,12 @@ export function BookIndex() {
         bookService.query(filterBy)
             .then(books => setBooks(books))
     }, [filterBy])
-    
+
     function removeCar(bookId) {
         console.log(bookId)
         bookService.remove(bookId)
-                .then(()=> setBooks(prevBooks => prevBooks.filter(book => book.id !== bookId)))
+            .then(() => setBooks(prevBooks => prevBooks.filter(book => book.id !== bookId)))
+        showSuccessMsg('car remove successfully')
     }
 
     function onSetFilterBy(newFilter) {
@@ -31,7 +34,7 @@ export function BookIndex() {
         <section>
             <h1>Books</h1>
             <Link to="/book/edit"><button>Add a book</button></Link>
-            <BookFilter filterBy={filterBy} onFilter={onSetFilterBy}/>
+            <BookFilter filterBy={filterBy} onFilter={onSetFilterBy} />
             <BookList books={books} onRemove={removeCar} />
         </section>
     )

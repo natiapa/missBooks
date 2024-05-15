@@ -1,5 +1,6 @@
 const { useState, useEffect } = React
 const { useParams, useNavigate } = ReactRouter
+import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service.js'
 
 import { bookService } from '../services/book.service.js'
 
@@ -7,7 +8,7 @@ export function BookEdit() {
     const [book, setBook] = useState(bookService.getEmptyBook())
     const navigate = useNavigate()
     const params = useParams()
-    console.log('params edit',params)
+    console.log('params edit', params)
 
     useEffect(() => {
         if (!params.bookId) return
@@ -19,9 +20,12 @@ export function BookEdit() {
     function onSave(ev) {
         ev.preventDefault()
         bookService.save(book)
-            .then(() => navigate('/book'))
+            .then(() => {
+                navigate('/book')
+                showSuccessMsg('The book has been successfully added')
+            })
             .catch(() => {
-                alert('couldnt save')
+                showErrorMsg('There is a problem, the book was not added successfully')
                 navigate('/book')
             })
     }
@@ -50,7 +54,6 @@ export function BookEdit() {
                 }
             }))
         } else setBook(prevBook => ({ ...prevBook, [prop]: value }))
-
     }
 
     return <section className="book-edit">
