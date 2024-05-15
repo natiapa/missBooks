@@ -16,8 +16,6 @@ export const bookService = {
     getEmptyBook,
     getDefaultFilter,
     addReview,
-    getEmptyReview,
-
 }
 
 function query(filterBy = {}) {
@@ -72,18 +70,7 @@ function getDefaultFilter(filterBy = { txt: '', price: 0 }) {
     return { txt: filterBy.txt, price: filterBy.price }
 }
 
-// function addReview(bookId, review) {
-//     const books = utilService.loadFromStorage(BOOK_KEY)
 
-//     const bookIndex = books.findIndex(book => book.id === bookId)
-//     if (bookIndex !== -1) {
-//         books[bookIndex].reviews.push(review)
-//         utilService.saveToStorage(BOOK_KEY, books)
-//     } else {
-//         console.error('Book not found')
-//     }
-
-// }
 function addReview(bookId, review) {
     const books = utilService.loadFromStorage(BOOK_KEY);
     const bookIndex = books.findIndex(book => book.id === bookId);
@@ -92,19 +79,11 @@ function addReview(bookId, review) {
         if (bookIndex !== -1) {
             books[bookIndex].reviews.push(review);
             utilService.saveToStorage(BOOK_KEY, books);
-            resolve(); // Resolve the promise once the review is added
+            resolve()
         } else {
             reject(new Error('Book not found')); // Reject the promise if the book is not found
         }
     });
-}
-
-function getEmptyReview(fullname = '',rating = 0,readAt='') {
-    return {
-      fullname,
-      rating,
-      readAt,   
-    }
 }
 
 

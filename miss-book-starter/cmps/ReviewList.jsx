@@ -1,24 +1,38 @@
-const { useState } = React
-const {  useNavigate } = ReactRouter
+
+const { useState, useRef } = React
+const { useNavigate } = ReactRouter
+
+
+import { RateBySelect } from "./RateBySelect.jsx"
+import { RateByTextbox } from "./RateByTextbox.jsx"
+import { RateByStars } from "./RateByStars.jsx"
+
+
 
 import { bookService } from '../services/book.service.js'
 
 export function ReviewList({ bookId }) {
-    const [review, setReview] = useState(bookService.getEmptyReview())
-    const navigate = useNavigate()
 
+    const navigate = useNavigate()
+    const [selectedOption, setSelectedOption] = useState('')
+    const [review, setReview] = useState({
+        fullname: '',
+        rating: 0,
+        readAt: '',
+    })
+
+    
 
     function onSave(ev) {
         ev.preventDefault();
         bookService.addReview(bookId, review)
             .then(() => navigate(`/book/${bookId}`))
-                       .catch(() => {
+            .catch(() => {
                 alert('couldnt save')
                 navigate('/book')
             })
     }
 
-   
     function handleChange({ target }) {
         const { type, name: prop } = target
         let { value } = target
@@ -33,6 +47,11 @@ export function ReviewList({ bookId }) {
         setReview(prevReview => ({ ...prevReview, [prop]: value }))
 
     }
+     function onSetRating(newRating){
+        setReview(prevStyle => ({ ...prevStyle, ...newRating }))
+     }
+
+    
 
 
     return <section className="book-review">
@@ -47,16 +66,14 @@ export function ReviewList({ bookId }) {
                 type="text"
                 placeholder="FullName" />
 
-            <label htmlFor="rating">Rate this:</label>
-            <input
-                onChange={handleChange}
-                type="range"
-                name="rating"
-                value={review.rating}
-                id="rating"
-                min="0" max="5"
-                low="1" high="5" optimum="5" />
-            <span>{review.rating}</span>
+            <label>Choose Rating Type:</label>
+            <DynamicCmp selectedOption={selectedOption} rating={review.rating} onSetRating={onSetRating} />
+            <select onChange={(ev) => setSelectedOption(ev.target.value)}>
+                <option value=""></option>
+                <option value="select">By Select</option>
+                <option value="textbox">By Textbox</option>
+                <option value="stars">By Stars</option>
+            </select>
 
 
             <label htmlFor="date"></label>
@@ -65,5 +82,21 @@ export function ReviewList({ bookId }) {
 
             <button>Save</button>
         </form>
+
     </section>
+
 }
+function DynamicCmp(props) {
+    console.log(props)
+
+    switch (props.selectedOption) {
+        case 'select':
+            return <RateBySelect {...props} />
+        case "textbox":
+            return <RateByTextbox {...props} />
+        case "stars":
+            return <RateByStars  {...props} />
+    }
+}
+
+
