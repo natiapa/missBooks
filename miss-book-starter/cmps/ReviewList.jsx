@@ -2,11 +2,11 @@
 const { useState, useRef } = React
 const { useNavigate } = ReactRouter
 
+import { TextboxRating } from "./TextboxRating.jsx"
 
-import { RateBySelect } from "./RateBySelect.jsx"
-import { RateByTextbox } from "./RateByTextbox.jsx"
-import { RateByStars } from "./RateByStars.jsx"
-
+import { RateBySelect } from "./dynamic-inputs/RateBySelect.jsx"
+import { RateByNumInput } from "./dynamic-inputs/RateByNumInput.jsx"
+import { RateByStars } from "./dynamic-inputs/RateByStars.jsx"
 
 
 import { bookService } from '../services/book.service.js'
@@ -14,17 +14,18 @@ import { bookService } from '../services/book.service.js'
 export function ReviewList({ bookId }) {
 
     const navigate = useNavigate()
-    const [selectedOption, setSelectedOption] = useState('')
+    const [cmpType, setCmpType] = useState('stars')
     const [review, setReview] = useState({
         fullname: '',
-        rating: 0,
-        readAt: '',
+        readAt: new Date().toISOString().slice(0, 10),
+        txt: '',
+        rating: 0
     })
 
-    
 
-    function onSave(ev) {
+    function onSaveBook(ev) {
         ev.preventDefault();
+
         bookService.addReview(bookId, review)
             .then(() => navigate(`/book/${bookId}`))
             .catch(() => {
@@ -42,23 +43,29 @@ export function ReviewList({ bookId }) {
             case 'number':
                 value = +value
                 break;
+
+            case 'checkbox':
+                value = target.checked
+                break;
         }
-
-        setReview(prevReview => ({ ...prevReview, [prop]: value }))
-
+        setReview((prevReview) => ({ ...prevReview, [prop]: value }))
     }
-     function onSetRating(newRating){
+
+    function onSetRating(newRating) {
         setReview(prevStyle => ({ ...prevStyle, ...newRating }))
-     }
+    }
 
-    
-
+    function onchangeCmpType(selectedType) {
+        setCmpType(selectedType)
+    }
 
     return <section className="book-review">
-        <h1>{'book-review'}</h1>
-        <form onSubmit={onSave}>
-            <label htmlFor="fullname">FullName:</label>
+        <form onSubmit={onSaveBook}>
+            <h1>{'book-review'}</h1>
+
+            <label htmlFor="fullname">Full name:</label>
             <input
+                autoFocus
                 onChange={handleChange}
                 value={review.fullname}
                 id="fullname"
@@ -66,19 +73,41 @@ export function ReviewList({ bookId }) {
                 type="text"
                 placeholder="FullName" />
 
-            <label>Choose Rating Type:</label>
-            <DynamicCmp selectedOption={selectedOption} rating={review.rating} onSetRating={onSetRating} />
-            <select onChange={(ev) => setSelectedOption(ev.target.value)}>
-                <option value=""></option>
-                <option value="select">By Select</option>
-                <option value="textbox">By Textbox</option>
-                <option value="stars">By Stars</option>
-            </select>
-
-
-            <label htmlFor="date"></label>
-            <input onChange={handleChange} type="date" id="readAt" name="readAt"
+            <label htmlFor="date">Date:</label>
+            <input
+                onChange={handleChange}
+                type="date"
+                id="readAt"
+                name="readAt"
                 value={review.readAt} />
+
+            <div className='rate-by-choice'>
+                <p>select rating type:</p>
+                <input name='rating'
+                    onChange={(ev) => onchangeCmpType(ev.target.value)}
+                    id='select'
+                    type="radio"
+                    value='select' />
+                <label htmlFor='select'>Select</label>
+
+                <input name='rating'
+                    onChange={(ev) => onchangeCmpType(ev.target.value)}
+                    id='numInput'
+                    type="radio"
+                    value='numInput' />
+                <label htmlFor='numInput'>Number Input</label>
+
+                <input name='rating'
+                    onChange={(ev) => onchangeCmpType(ev.target.value)}
+                    id='stars'
+                    type="radio"
+                    value='stars' />
+                <label htmlFor='stars'>Stars</label>
+            </div>
+
+            <label>Choose Rating Type:</label>
+            <DynamicCmp type={cmpType} rating={review.rating} onSetRating={onSetRating} />
+            <TextboxRating handleChange= {handleChange} txt ={review.txt}/>
 
             <button>Save</button>
         </form>
@@ -89,11 +118,11 @@ export function ReviewList({ bookId }) {
 function DynamicCmp(props) {
     console.log(props)
 
-    switch (props.selectedOption) {
+    switch (props.type) {
         case 'select':
             return <RateBySelect {...props} />
-        case "textbox":
-            return <RateByTextbox {...props} />
+        case "numInput":
+            return <RateByNumInput {...props} />
         case "stars":
             return <RateByStars  {...props} />
     }

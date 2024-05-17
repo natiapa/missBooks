@@ -56,7 +56,7 @@ function save(book) {
 }
 
 
-function getEmptyBook(title = '',amount='', currencyCode = 'EUR', isOnSale = false) {
+function getEmptyBook(title = '', amount = '', currencyCode = 'EUR', isOnSale = false) {
     return {
         title,
         listPrice: {
@@ -71,27 +71,22 @@ function getDefaultFilter(filterBy = { txt: '', price: 0 }) {
 }
 
 
-function addReview(bookId, review) {
-    const books = utilService.loadFromStorage(BOOK_KEY)
-    const bookIndex = books.findIndex(book => book.id === bookId)
-
-    return new Promise((resolve, reject) => {
-        if (bookIndex !== -1) {
-            books[bookIndex].reviews.push(review)
-            utilService.saveToStorage(BOOK_KEY, books)
-            resolve()
-        } else {
-            reject(new Error('Book not found'))
-        }
-    });
+function addReview(bookId, reviewToSave) {
+    return get(bookId).then(book => {
+        const review = _createReview(reviewToSave)
+        console.log('review from service',review)
+        book.reviews.unshift(review)
+        return save(book).then(() => review)
+    })
 }
 
-
+ // privet functions //
+ 
 function _createBooks() {
     const ctgs = ['Love', 'Fiction', 'Poetry', 'Computers', 'Religion']
     const books = utilService.loadFromStorage(BOOK_KEY) || []
 
-    if(books && books.length) return
+    if (books && books.length) return
 
     for (let i = 0; i < 20; i++) {
         const book = {
@@ -117,7 +112,7 @@ function _createBooks() {
         }
         books.push(book)
     }
-    console.log('books',books)
+    console.log('books', books)
     utilService.saveToStorage(BOOK_KEY, books)
 }
 
@@ -130,4 +125,11 @@ function _setNextPrevBookId(book) {
         book.prevBookId = prevBook.id
         return book
     })
+}
+
+function _createReview(reviewToSave){
+    return {
+        id: utilService.makeId(),
+        ...reviewToSave
+    }
 }

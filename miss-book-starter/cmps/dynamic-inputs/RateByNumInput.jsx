@@ -1,4 +1,4 @@
-export function RateByTextbox ({rating,onSetRating}) {
+export function RateByNumInput ({rating,onSetRating}) {
 
   function handleChange({target}){
         let ratingVal = Math.min(Math.max(parseInt(target.value), 1), 5)

@@ -43,9 +43,11 @@ export function BookDetails() {
         <ul>
             {book.reviews.map((review, index) => (
                 <li key={index}>
-                    <p>Fullname: {review.fullname}</p>
+                    <p>Full name: {review.fullname}</p>
+                    <p>Date: {review.readAt}</p>
                     <p>Rating: {review.rating}</p>
-                    <p>Read At: {review.readAt}</p>
+                    <p>Review: {review.txt}</p>
+                   
                 </li>
             ))}
         </ul>

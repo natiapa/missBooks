@@ -2,14 +2,14 @@
 export function RateByStars ({rating,onSetRating}) {
 
      function handleSelect(rating){
-        const newRating = {rating: rating}
+      console.log("rating", rating)
+        const newRating = {rating: rating, name: 'rating'}
         onSetRating(newRating)
         console.log('newRating', newRating)
      }
     
       return (
         <div>
-          <label htmlFor="rating">Rating:</label>
           {[...Array(5)].map((_, index) => (
             <Star
               key={index}
