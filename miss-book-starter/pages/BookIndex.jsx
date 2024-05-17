@@ -8,11 +8,14 @@ import { showSuccessMsg } from '../services/event-bus.service.js'
 import { BookList } from '/../cmps/BookList.jsx'
 import { BookFilter } from '/../cmps/BookFilter.jsx'
 
+import { AddBook } from "./AddBook.jsx"
+
 
 
 export function BookIndex() {
     const [books, setBooks] = useState([])
     const [filterBy, setFilterBy] = useState(bookService.getDefaultFilter())
+  
 
     useEffect(() => {
         bookService.query(filterBy)
@@ -34,6 +37,7 @@ export function BookIndex() {
         <section>
             <h1>Books</h1>
             <Link to="/book/edit"><button>Add a book</button></Link>
+            <AddBook/>
             <BookFilter filterBy={filterBy} onFilter={onSetFilterBy} />
             <BookList books={books} onRemove={removeCar} />
         </section>
